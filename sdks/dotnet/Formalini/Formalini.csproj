@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <PackageId>Formalini.PublicApi</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>Marco Pascalini</Authors>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <Description>Formalini public document API client</Description>
+  </PropertyGroup>
+</Project>

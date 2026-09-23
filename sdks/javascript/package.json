@@ -1,0 +1,12 @@
+{
+  "name": "@formalini/public-api-client",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Server-side client for the Formalini public document API",
+  "type": "module",
+  "exports": "./src/index.js",
+  "scripts": {"test": "node --test"},
+  "author": "Marco Pascalini <contact@pascalini.com>",
+  "engines": {"node": ">=20"},
+  "license": "Apache-2.0"
+}

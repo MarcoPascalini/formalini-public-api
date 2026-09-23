@@ -1,0 +1,13 @@
+.env
+.env.*
+!.env.example
+__pycache__/
+.pytest_cache/
+node_modules/
+vendor/
+bin/
+obj/
+target/
+.tools/
+*.egg-info/
+.ruff_cache/

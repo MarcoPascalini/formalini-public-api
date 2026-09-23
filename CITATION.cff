@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this repository, cite it using these details."
+title: "Formalini Document AI API"
+authors:
+  - family-names: Pascalini
+    given-names: Marco
+    email: contact@pascalini.com
+license: Apache-2.0
+type: software

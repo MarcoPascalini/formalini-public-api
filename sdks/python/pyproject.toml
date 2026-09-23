@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "formalini-public-api-client"
+version = "0.1.0"
+description = "Client for the Formalini public document API"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{name = "Marco Pascalini", email = "contact@pascalini.com"}]
+license = {text = "Apache-2.0"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

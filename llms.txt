@@ -1,0 +1,11 @@
+# Formalini Public API
+
+Official API docs: https://formalini.com/docs
+Base URL: https://api.formalini.com/api/public/v1
+Authentication: Authorization: Bearer <FORMALINI_API_KEY>; scopes documents.read, documents.write, workflows.run.
+Resources: GET/POST /documents, POST /documents/upload, GET/PATCH /documents/{id}, POST /workflows/dispatch.
+Uploads use repeated multipart file fields containing page images, not PDFs.
+Quickstart: docs/quickstart.md
+Contract notes: docs/api-contract-report.md
+OpenAPI: openapi/formalini-public-v1.yaml
+Never place a secret key in browser-side or distributed client code.
