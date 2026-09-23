@@ -43,4 +43,4 @@ The SDK source, examples and documentation are licensed under [Apache 2.0](LICEN
 
 [Contract notes](docs/api-contract-report.md) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md)
 
-Author: Marco Pascalini · contact@pascalini.com
+Author: Marco Pascalini
