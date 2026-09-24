@@ -76,4 +76,4 @@ The SDK source, examples and documentation are licensed under [Apache 2.0](LICEN
 
 **Keep secret API keys server-side.** Never embed them in browser JavaScript, public mobile apps, public repositories or distributed client source. Use environment variables or a secrets manager. Never log Authorization headers.
 
-Author: Marco Pascalini · contact@pascalini.com
+Author: Marco Pascalini
