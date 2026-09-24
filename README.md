@@ -24,6 +24,19 @@ curl "https://api.formalini.com/api/public/v1/documents?limit=10" \
 
 The response contains a `documents` array. Each document can include its ID, name, status, and extracted fields. [Quickstart and upload example](docs/quickstart.md).
 
+## Process your first document
+
+Create a key with `documents.write`, then send a supported page image:
+
+```sh
+curl -X POST "https://api.formalini.com/api/public/v1/documents/upload" \
+  -H "Authorization: Bearer ${FORMALINI_API_KEY}" \
+  -F "file=@invoice-page-1.jpg" \
+  -F "name=Invoice example"
+```
+
+The response contains a `document` with its ID and extracted fields. [Upload formats, limits, and asynchronous processing](docs/upload.md) · [API errors](docs/errors.md).
+
 ## SDKs
 
 | Language | Status |
@@ -34,13 +47,33 @@ The response contains a `documents` array. Each document can include its ID, nam
 | [C# / .NET](sdks/dotnet/README.md) | Six documented operations, mocked tests; unpublished |
 | [Java](sdks/java/README.md) | Six documented operations, mocked tests; unpublished |
 | [Go](sdks/go/README.md) | Six documented operations, mocked tests; unpublished |
-| Ruby, Rust | Planned; no package or release claim |
-| cURL | [Copyable requests](docs/quickstart.md) |
+| [Ruby](sdks/ruby/README.md) | Six documented operations, mocked tests; unpublished |
+| [Rust](sdks/rust/README.md) | Six documented operations, mocked tests; unpublished |
+| [cURL](sdks/curl/README.md) | Six copyable requests |
+
+## Document lifecycle
+
+```mermaid
+flowchart LR
+  A[Page image] --> B[Upload and extract]
+  B --> C[Document and structured fields]
+  C --> D[Retrieve or correct]
+  D --> E[Dispatch event]
+  E --> F[Connected system]
+```
+
+The API provides [listing, creation, upload, retrieval, and correction](docs/documents.md), plus [workflow event dispatch](docs/workflows.md). See the [OpenAPI description](openapi/formalini-public-v1.yaml) for request shapes and [contract notes](docs/api-contract-report.md) for what remains unverified.
+
+## Examples and next steps
+
+[PDF to JSON](examples/pdf-to-json/README.md) · [Invoice to JSON](examples/invoice-to-json/README.md) · [Receipt to JSON](examples/receipt-to-json/README.md) · [Form data](examples/form-to-json/README.md) · [All examples](examples/README.md)
+
+The [free account](https://formalini.com/auth) lets you generate an API key and test an integration. [Usage limits and additional credits](docs/free-usage.md) are managed by your account. Developers building for clients can read about the [partner program](docs/partner-program.md).
+
+[Documentation index](docs/README.md) · [Contributing](CONTRIBUTING.md) · [Security policy](SECURITY.md)
 
 The SDK source, examples and documentation are licensed under [Apache 2.0](LICENSE). The hosted Formalini service requires an account and API key and is governed by its [service terms](https://formalini.com/legal/terms). Free access has [usage limits](https://formalini.com/pricing); higher usage may require credits or a paid plan.
 
 **Keep secret API keys server-side.** Never embed them in browser JavaScript, public mobile apps, public repositories or distributed client source. Use environment variables or a secrets manager. Never log Authorization headers.
 
-[Contract notes](docs/api-contract-report.md) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md)
-
-Author: Marco Pascalini
+Author: Marco Pascalini · contact@pascalini.com

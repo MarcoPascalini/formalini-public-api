@@ -78,6 +78,13 @@ func TestRequests(t *testing.T) {
 	if !errors.As(err, &apiError) || apiError.Status != 429 || apiError.Message != "Rate limit reached" {
 		t.Fatalf("error mapping: %v", err)
 	}
+	status = 402
+	responseBody = `{"error":"No credits remaining"}`
+	_, err = client.Documents.Get(ctx, "doc-id")
+	var usageError *UsageLimitError
+	if !errors.As(err, &usageError) || usageError.Status != 402 || usageError.Message != "No credits remaining" {
+		t.Fatalf("usage-limit mapping: %v", err)
+	}
 }
 
 type roundTripFunc func(*http.Request) (*http.Response, error)

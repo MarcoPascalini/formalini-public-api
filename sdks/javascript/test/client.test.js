@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { FormaliniApiError, FormaliniClient, FormaliniResponseError } from '../src/index.js';
+import { FormaliniApiError, FormaliniClient, FormaliniResponseError, FormaliniUsageLimitError } from '../src/index.js';
 
 const ok = data => ({ ok: true, json: async () => data });
 
@@ -44,4 +44,6 @@ test('validates inputs and preserves rate-limit errors', async () => {
   await assert.rejects(client.documents.list(), error => error instanceof FormaliniApiError && error.status === 429 && error.retryAfter === '10');
   const malformed = new FormaliniClient({ apiKey: 'test-key', fetchImpl: async () => ok({ wrong: [] }) });
   await assert.rejects(malformed.documents.list(), FormaliniResponseError);
+  const limited = new FormaliniClient({ apiKey: 'test-key', fetchImpl: async () => ({ ok: false, status: 402, json: async () => ({ error: 'No credits remaining' }) }) });
+  await assert.rejects(limited.documents.list(), FormaliniUsageLimitError);
 });

@@ -6,6 +6,7 @@ require dirname(__DIR__) . '/src/Client.php';
 
 use Formalini\ApiException;
 use Formalini\Client;
+use Formalini\UsageLimitException;
 
 function check(bool $condition, string $label): void
 {
@@ -54,6 +55,14 @@ try {
     throw new RuntimeException('Expected API error');
 } catch (ApiException $error) {
     check($error->status === 403 && $error->getMessage() === 'Insufficient scope.', 'API error mapping');
+}
+
+$limited = new Client('test-key', transport: static fn () => [402, '{"error":"No credits remaining"}', null]);
+try {
+    $limited->documents()->get('doc-id');
+    throw new RuntimeException('Expected usage-limit error');
+} catch (UsageLimitException $error) {
+    check($error->status === 402, 'Usage-limit mapping');
 }
 
 echo "Formalini PHP request tests passed.\n";

@@ -7,6 +7,13 @@ export class FormaliniApiError extends Error {
   }
 }
 
+export class FormaliniUsageLimitError extends FormaliniApiError {
+  constructor(message) {
+    super(402, message);
+    this.name = 'FormaliniUsageLimitError';
+  }
+}
+
 export class FormaliniResponseError extends Error {
   constructor() {
     super('Unexpected Formalini response');
@@ -51,9 +58,17 @@ export class FormaliniClient {
         signal: controller.signal,
       });
       let data;
-      try { data = await response.json(); } catch { throw new FormaliniResponseError(); }
+      try { data = await response.json(); } catch {
+        if (!response.ok) {
+          const message = `Formalini returned HTTP ${response.status}`;
+          if (response.status === 402) throw new FormaliniUsageLimitError(message);
+          throw new FormaliniApiError(response.status, message, response.headers?.get('Retry-After') ?? null);
+        }
+        throw new FormaliniResponseError();
+      }
       if (!response.ok) {
         const message = typeof data?.error === 'string' ? data.error : `Formalini returned HTTP ${response.status}`;
+        if (response.status === 402) throw new FormaliniUsageLimitError(message);
         throw new FormaliniApiError(response.status, message, response.headers?.get('Retry-After') ?? null);
       }
       if (!data || typeof data !== 'object' || Array.isArray(data)) throw new FormaliniResponseError();

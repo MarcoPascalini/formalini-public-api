@@ -60,6 +60,7 @@ public final class FormaliniClient {
         if (response.statusCode() >= 400) {
             String message = result.has("error") && result.get("error").isJsonPrimitive()
                 ? result.get("error").getAsString() : "Formalini returned HTTP " + response.statusCode();
+            if (response.statusCode() == 402) throw new UsageLimitException(message);
             throw new ApiException(response.statusCode(), message, response.headers().firstValue("Retry-After").orElse(null));
         }
         return result;
@@ -154,7 +155,7 @@ public final class FormaliniClient {
         body.write(text.getBytes(StandardCharsets.UTF_8));
     }
 
-    public static final class ApiException extends IOException {
+    public static class ApiException extends IOException {
         private final int status;
         private final String retryAfter;
 
@@ -166,5 +167,9 @@ public final class FormaliniClient {
 
         public int status() { return status; }
         public String retryAfter() { return retryAfter; }
+    }
+
+    public static final class UsageLimitException extends ApiException {
+        public UsageLimitException(String message) { super(402, message, null); }
     }
 }

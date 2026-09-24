@@ -8,12 +8,16 @@ use Closure;
 use JsonException;
 use RuntimeException;
 
-final class ApiException extends RuntimeException
+class ApiException extends RuntimeException
 {
     public function __construct(public readonly int $status, string $message, public readonly ?string $retryAfter = null)
     {
         parent::__construct($message, $status);
     }
+}
+
+final class UsageLimitException extends ApiException
+{
 }
 
 final class Client
@@ -74,7 +78,8 @@ final class Client
         }
         if ($status >= 400) {
             $message = is_string($result['error'] ?? null) ? $result['error'] : "Formalini returned HTTP $status";
-            throw new ApiException($status, $message, $retryAfter);
+            $exception = $status === 402 ? UsageLimitException::class : ApiException::class;
+            throw new $exception($status, $message, $retryAfter);
         }
         return $result;
     }

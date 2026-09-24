@@ -11,6 +11,8 @@ php sdks/php/tests/run.php
 dotnet run --project sdks/dotnet/Formalini.Tests/Formalini.Tests.csproj
 mvn -f sdks/java/pom.xml package
 cd sdks/go && go test ./... && go vet ./...
+ruby -I sdks/ruby/lib sdks/ruby/test/client_test.rb
+cd sdks/rust && cargo fmt --check && cargo clippy --all-targets -- -D warnings && cargo test
 ```
 
 Behavioral changes need focused mocked HTTP tests. Do not send production requests in unit tests. Add SDK methods only after confirming the server route, scope, request body, response, and errors. Keep language APIs idiomatic and avoid speculative models.

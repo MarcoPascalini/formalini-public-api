@@ -1,0 +1,29 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: {interval: monthly}
+  - package-ecosystem: npm
+    directory: /sdks/javascript
+    schedule: {interval: monthly}
+  - package-ecosystem: pip
+    directory: /sdks/python
+    schedule: {interval: monthly}
+  - package-ecosystem: composer
+    directory: /sdks/php
+    schedule: {interval: monthly}
+  - package-ecosystem: nuget
+    directory: /sdks/dotnet/Formalini
+    schedule: {interval: monthly}
+  - package-ecosystem: maven
+    directory: /sdks/java
+    schedule: {interval: monthly}
+  - package-ecosystem: gomod
+    directory: /sdks/go
+    schedule: {interval: monthly}
+  - package-ecosystem: bundler
+    directory: /sdks/ruby
+    schedule: {interval: monthly}
+  - package-ecosystem: cargo
+    directory: /sdks/rust
+    schedule: {interval: monthly}

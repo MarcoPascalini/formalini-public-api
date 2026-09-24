@@ -12,6 +12,11 @@ jobs:
           python-version: '3.12'
       - name: Unit tests
         run: PYTHONPATH=sdks/python/src python -m unittest discover -s sdks/python/tests -v
+      - run: python -m pip install ruff==0.13.2 mypy==1.17.1 build
+      - run: ruff check sdks/python scripts
+      - run: ruff format --check sdks/python scripts
+      - run: mypy sdks/python/src/formalini --ignore-missing-imports
+      - run: python -m build sdks/python
   javascript:
     runs-on: ubuntu-latest
     defaults:
@@ -24,6 +29,7 @@ jobs:
           node-version: '22'
       - name: Unit tests
         run: npm test
+      - run: npm pack --dry-run
   php:
     runs-on: ubuntu-latest
     steps:
@@ -42,18 +48,21 @@ jobs:
         with:
           dotnet-version: '8.0.x'
       - run: dotnet run --project sdks/dotnet/Formalini.Tests/Formalini.Tests.csproj --configuration Release
+      - run: dotnet pack sdks/dotnet/Formalini/Formalini.csproj --configuration Release
   java:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: sdks/java
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
-      - run: mvn -B -f sdks/java/pom.xml package
-      - run: mvn -B -f sdks/java/pom.xml dependency:build-classpath -Dmdep.outputFile=classpath.txt
-      - run: javac -cp "sdks/java/target/classes:$(cat sdks/java/classpath.txt)" -d sdks/java/target/test-classes sdks/java/src/test/java/com/formalini/FormaliniClientTest.java
-      - run: java -cp "sdks/java/target/classes:sdks/java/target/test-classes:$(cat sdks/java/classpath.txt)" com.formalini.FormaliniClientTest
+      - run: mvn -B package dependency:build-classpath -Dmdep.outputFile=classpath.txt
+      - run: javac -cp "target/classes:$(cat classpath.txt)" -d target/test-classes src/test/java/com/formalini/FormaliniClientTest.java
+      - run: java -cp "target/classes:target/test-classes:$(cat classpath.txt)" com.formalini.FormaliniClientTest
   go:
     runs-on: ubuntu-latest
     defaults:
@@ -67,6 +76,31 @@ jobs:
       - run: go test ./...
       - run: go vet ./...
       - run: test -z "$(gofmt -l .)"
+  ruby:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: sdks/ruby
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+      - run: ruby -I lib test/client_test.rb
+      - run: gem build formalini.gemspec
+  rust:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: sdks/rust
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - run: cargo fmt --check
+      - run: cargo clippy --all-targets -- -D warnings
+      - run: cargo test
   openapi:
     runs-on: ubuntu-latest
     steps:

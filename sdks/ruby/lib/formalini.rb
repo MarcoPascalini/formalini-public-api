@@ -14,6 +14,9 @@ module Formalini
     end
   end
 
+  class UsageLimitError < ApiError
+  end
+
   class Client
     attr_reader :documents, :workflows
 
@@ -44,7 +47,8 @@ module Formalini
 
       if status >= 400
         message = result['error'].is_a?(String) ? result['error'] : "Formalini returned HTTP #{status}"
-        raise ApiError.new(status, message, retry_after)
+        error = status == 402 ? UsageLimitError : ApiError
+        raise error.new(status, message, retry_after)
       end
       result
     end

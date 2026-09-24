@@ -25,6 +25,16 @@ type APIError struct {
 
 func (e *APIError) Error() string { return e.Message }
 
+type UsageLimitError struct{ *APIError }
+
+func apiError(status int, message, retryAfter string) error {
+	base := &APIError{Status: status, Message: message, RetryAfter: retryAfter}
+	if status == http.StatusPaymentRequired {
+		return &UsageLimitError{APIError: base}
+	}
+	return base
+}
+
 type Client struct {
 	baseURL   string
 	apiKey    string
@@ -76,7 +86,7 @@ func (c *Client) request(ctx context.Context, method, path, contentType string, 
 	var decoded map[string]json.RawMessage
 	if err := json.Unmarshal(raw, &decoded); err != nil || decoded == nil {
 		if response.StatusCode >= 400 {
-			return nil, &APIError{Status: response.StatusCode, Message: fmt.Sprintf("Formalini returned HTTP %d", response.StatusCode), RetryAfter: response.Header.Get("Retry-After")}
+			return nil, apiError(response.StatusCode, fmt.Sprintf("Formalini returned HTTP %d", response.StatusCode), response.Header.Get("Retry-After"))
 		}
 		return nil, errors.New("unexpected Formalini response")
 	}
@@ -86,7 +96,7 @@ func (c *Client) request(ctx context.Context, method, path, contentType string, 
 		if json.Unmarshal(decoded["error"], &serverMessage) == nil && serverMessage != "" {
 			message = serverMessage
 		}
-		return nil, &APIError{Status: response.StatusCode, Message: message, RetryAfter: response.Header.Get("Retry-After")}
+		return nil, apiError(response.StatusCode, message, response.Header.Get("Retry-After"))
 	}
 	return decoded, nil
 }

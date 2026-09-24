@@ -8,5 +8,9 @@
     <Authors>Marco Pascalini</Authors>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <Description>Formalini public document API client</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
+  <ItemGroup>
+    <None Include="..\README.md" Pack="true" PackagePath="README.md" />
+  </ItemGroup>
 </Project>

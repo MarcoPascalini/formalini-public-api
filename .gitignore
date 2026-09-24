@@ -11,3 +11,6 @@ target/
 .tools/
 *.egg-info/
 .ruff_cache/
+.mypy_cache/
+dist/
+*.gem

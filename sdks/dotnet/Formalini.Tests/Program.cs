@@ -51,6 +51,18 @@ catch (FormaliniApiException error)
     Check(error.StatusCode == HttpStatusCode.Forbidden && error.Message == "Insufficient scope.", "API error mapping");
 }
 
+handler.StatusCode = HttpStatusCode.PaymentRequired;
+handler.ResponseBody = "{\"error\":\"No credits remaining\"}";
+try
+{
+    using var ignored = await client.Documents.GetAsync("doc-id");
+    throw new Exception("Expected usage-limit error");
+}
+catch (FormaliniUsageLimitException error)
+{
+    Check(error.Message == "No credits remaining", "Usage-limit mapping");
+}
+
 Console.WriteLine("Formalini .NET request tests passed.");
 
 static void Check(bool condition, string label)

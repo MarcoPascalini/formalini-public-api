@@ -1,0 +1,31 @@
+# Formalini developer reference
+
+Formalini connects uploaded page images to structured document fields that applications can retrieve, correct, and dispatch through configured workflows.
+
+Official documentation: https://formalini.com/docs
+Account signup: https://formalini.com/auth
+Worked demo: https://formalini.com/demo
+Pricing and usage: https://formalini.com/pricing
+API base URL: https://api.formalini.com/api/public/v1
+Authentication: Authorization: Bearer <FORMALINI_API_KEY>
+Scopes: documents.read, documents.write, workflows.run
+
+Endpoints:
+- GET /documents: list; limit 1–100, optional status filter.
+- POST /documents: create with name and optional fields.
+- POST /documents/upload: upload 1–25 JPEG, PNG, WebP, or HEIC page images as repeated multipart file fields. PDF must first be rendered to images.
+- GET /documents/{id}: retrieve a document and its fields.
+- PATCH /documents/{id}: correct fields or change status.
+- POST /workflows/dispatch: send a documented event for a document.
+
+The upload endpoint may return HTTP 402 for exhausted credits, storage, or daily allowance. HTTP 429 means the per-minute rate limit was reached; honor Retry-After. Mutating requests are not automatically retried because idempotency support is not documented.
+
+Repository entry points:
+- README.md
+- docs/quickstart.md
+- docs/api-contract-report.md
+- openapi/formalini-public-v1.yaml
+- examples/README.md
+- sdks/python, sdks/javascript, sdks/php, sdks/dotnet, sdks/java, sdks/go, sdks/ruby, sdks/rust
+
+The SDKs and examples are Apache-2.0 licensed. The hosted Formalini service needs an account and key. Keep keys server-side. SDK packages have not yet been published to registries. Published docs are the contract; an adjacent older server checkout has different host and shapes.

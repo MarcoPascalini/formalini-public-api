@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace Formalini;
 
-public sealed class FormaliniApiException : Exception
+public class FormaliniApiException : Exception
 {
     public HttpStatusCode StatusCode { get; }
     public TimeSpan? RetryAfter { get; }
@@ -17,6 +17,11 @@ public sealed class FormaliniApiException : Exception
         StatusCode = statusCode;
         RetryAfter = retryAfter;
     }
+}
+
+public sealed class FormaliniUsageLimitException : FormaliniApiException
+{
+    public FormaliniUsageLimitException(string message) : base(HttpStatusCode.PaymentRequired, message, null) { }
 }
 
 public sealed class FormaliniClient
@@ -55,6 +60,7 @@ public sealed class FormaliniClient
                     message = value.GetString() ?? message;
             }
             catch (JsonException) { }
+            if (response.StatusCode == HttpStatusCode.PaymentRequired) throw new FormaliniUsageLimitException(message);
             throw new FormaliniApiException(response.StatusCode, message, response.Headers.RetryAfter?.Delta);
         }
         try

@@ -54,6 +54,14 @@ public final class FormaliniClientTest {
         } catch (FormaliniClient.ApiException error) {
             check(error.status() == 403 && error.getMessage().equals("Insufficient scope."), "error mapping");
         }
+        http.status = 402;
+        http.body = "{\"error\":\"No credits remaining\"}";
+        try {
+            client.documents.get("doc-id");
+            throw new AssertionError("expected usage-limit error");
+        } catch (FormaliniClient.UsageLimitException error) {
+            check(error.status() == 402, "usage-limit mapping");
+        }
         System.out.println("Formalini Java request tests passed.");
     }
 
